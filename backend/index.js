@@ -3,12 +3,24 @@ import { PORT, MONGO_DB_URL } from './config.js';
 import mongoose from 'mongoose';
 import { Question } from './models/questionModel.js';
 import { Usuario } from './models/userModel.js';
-
+import cors from 'cors';
 
 
 const app = express();
 
 app.use(express.json());
+
+// Middleware for handling CORS POLICY
+// Option 1: Allow All Origins with Default of cors(*)
+app.use(cors());
+// Option 2: Allow Custom Origins
+// app.use(
+//   cors({
+//     origin: 'http://localhost:3000',
+//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//     allowedHeaders: ['Content-Type'],
+//   })
+// );
 
 //Routes
 
@@ -94,7 +106,7 @@ app.post('/usuario',async (request,response)=>{
     try {
         if(
             !request.body.name ||
-            !request.body.username ||
+            !request.body.email ||
             !request.body.password
         ){
             return response.status(400).send({
@@ -102,9 +114,12 @@ app.post('/usuario',async (request,response)=>{
             })
         }
 
+       
+
+
         const newUser={
             name: request.body.name,
-            username: request.body.username,
+            email: request.body.email,
             password: request.body.password
 
         }
@@ -122,11 +137,11 @@ app.post('/usuario',async (request,response)=>{
 
 //get a user by username
 
-app.get('/usuario/:username',async (request,response)=>{
+app.get('/usuario/:email',async (request,response)=>{
     try {
 
-        const {username} = request.params;
-        const user = await Usuario.find({"username":username});
+        const {email} = request.params;
+        const user = await Usuario.find({"email":email});
         return response.status(200).json(user)
         
     } catch (error) {

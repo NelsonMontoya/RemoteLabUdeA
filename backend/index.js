@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import { Question } from './models/questionModel.js';
 import { Usuario } from './models/userModel.js';
 import cors from 'cors';
+//import bcrypt from 'bcrypt';
+
 
 
 const app = express();
@@ -23,6 +25,7 @@ app.use(cors());
 // );
 
 //Routes
+
 
 app.get('/',(request,response)=>{
     console.log(response);
@@ -72,12 +75,25 @@ app.post('/question',async(request,response)=>{
 
 //Obtain the questions
 
-app.get('/question',async (request,response)=>{
+app.get('/question', async (request,response)=>{
     try {
-        const questions = await Question.find({});
+        const questions = await Question.find({});  
+
+        const preguntasClonadas  = questions;
+        const preguntasAleatorias  = [];
+        // Seleccionamos aleatoriamente las preguntas hasta llegar al número deseado
+        for (let i = 0; i < questions.length; i++) {
+              // Generamos un índice aleatorio dentro del rango de preguntas restantes
+              const randomIndex = Math.floor(Math.random() * preguntasClonadas.length);
+              // Extraemos la pregunta aleatoria del arreglo y la agregamos a la lista de preguntas aleatorias
+              preguntasAleatorias.push(preguntasClonadas[randomIndex]);
+              console.log(preguntasAleatorias);
+              // Eliminamos la pregunta seleccionada del arreglo clonado para evitar duplicados
+              preguntasClonadas.splice(randomIndex, 1);
+        }  
         return response.status(200).json({
-            count: questions.length,
-            data: questions
+            count: preguntasClonadas.length,
+            data: preguntasClonadas
         })
         
     } catch (error) {
@@ -102,38 +118,51 @@ app.get('/question/:id',async (request,response)=>{
 });
 
 //Create a user
-app.post('/usuario',async (request,response)=>{
+app.post('/usuario/signup',async (request,response)=>{
     try {
-        if(
-            !request.body.name ||
-            !request.body.email ||
-            !request.body.password
-        ){
+        let {name,email,password} = request.body;
+        if(!name || !email || !password){
             return response.status(400).send({
                 message: 'Send all the required fields.'
             })
-        }
-
-       
-
-
-        const newUser={
-            name: request.body.name,
-            email: request.body.email,
-            password: request.body.password
-
-        }
+        };
         
-
-        const usuario  = await Usuario.create(newUser);
-        return response.status(201).send(usuario);
-
-        
+        const existingUser = await Usuario.findOne({email})
+        if(existingUser){
+            return response.json({message:'El usuario ya existe.'})
+        }else{
+            //password = await bcrypt.hash(password,10);
+            const usuario  = await Usuario.create({name,email,password});
+            return response.status(201).send(usuario);
+        }
     } catch (error) {
         console.log(error);   
         return response.status(500).send({message: error.message});    
     }
 })
+
+//login
+app.post('/usuario/login',async (request,response)=>{
+    try {
+        const {email} = request.body.email;
+        const user = await Usuario.find({email});
+        
+        if(!user){
+            
+            return response.json({message:'Usuario no está registrado.'});
+        }
+
+        //const validPassword = await bcrypt.compare(password,usuario.password);
+        console.log(user);
+        return response.status(200).json(user)      
+        
+    } catch (error) {
+        console.log(error);
+        return response.status(500).send({message:error.message})
+    }
+    
+    
+});
 
 //get a user by username
 
@@ -141,7 +170,7 @@ app.get('/usuario/:email',async (request,response)=>{
     try {
 
         const {email} = request.params;
-        const user = await Usuario.find({"email":email});
+        const user = await Usuario.find({email});
         return response.status(200).json(user)
         
     } catch (error) {

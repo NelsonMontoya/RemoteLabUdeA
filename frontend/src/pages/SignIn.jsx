@@ -1,18 +1,21 @@
 import React, { useState } from 'react'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Avatar, Box, Button, Container, CssBaseline, Grid, Link, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Button, Container, CssBaseline, Grid, Link, Paper, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const esquema = createTheme();
+//const esquema = createTheme();
 
 
 
 const SignIn = () => {
     const [correo,setCorreo] = useState('');
-    const [clave,setClave] = useState('')
+    const [clave,setClave] = useState('');
+    //const [userPassword, setUserPassword] = useState('');
    
+    const navigate = useNavigate();
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -21,31 +24,40 @@ const SignIn = () => {
           password: data.get('password'),
         });
         setCorreo(data.get('email'));
-        console.log(email);
+        //console.log(email);
         setClave(data.get('password'));
-        console.log(clave);
+        //console.log(clave);
       };
 
-     
+      const datos ={
+        email: correo,
+        password: clave
+      }
 
+      
       axios
-      .get(`http://localhost:5000/usuario/${correo}`)
+      .post(`http://localhost:5000/usuario/login`,datos)
       .then((response)=>{
+        
         console.log(response);
-
+        //navigate('/')
+        
+        
     })
   return (
-    <ThemeProvider theme={esquema}>
-        <Container >
-            <CssBaseline />
-                <Box 
-                   sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    alignContent:'center'
-                  }}
+    //<ThemeProvider theme={esquema}>
+        <Grid align ='center'>
+            <Paper elevation={15} sx={{
+                padding:10,
+                height:'100vh',
+                width:600,
+                margin:'20px auto',
+                display:'flex',
+                alignItems:'center',
+                
+            }}>
+                <Box
+                  
                 >
                 
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -56,7 +68,7 @@ const SignIn = () => {
                         Laboratorio Remoto U de A
                     </Typography>
 
-                    <Box component='form' onSubmit={handleSubmit} noValidate sx={{mt:1}}>
+                    <Box component='form' onSubmit={handleSubmit}  sx={{mt:1}}>
                     <TextField
                         margin="normal"
                         required
@@ -100,8 +112,9 @@ const SignIn = () => {
                     </Grid> 
                     </Box>
                 </Box>
-        </Container>
-    </ThemeProvider>
+            </Paper>
+        </Grid>
+    //</ThemeProvider>
   )
 }
 

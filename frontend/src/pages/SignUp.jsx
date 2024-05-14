@@ -33,7 +33,7 @@ const defaultTheme = createTheme();
 
 const SignUp =() => {
 
-    const [isInDatabase,setIsInDatabase] = useState(false);
+  //const [isInDatabase,setIsInDatabase] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -51,13 +51,14 @@ const SignUp =() => {
         password: data.get('password'),
     }
 
+    
    
    
 
     axios
-    .post('http://localhost:5000/usuario',datos)
+    .post('http://localhost:5000/usuario/signup',datos)
     .then((response)=>{
-        console.log(response);
+        console.log(response.data);
 
     })
     

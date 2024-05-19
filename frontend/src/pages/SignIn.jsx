@@ -50,7 +50,7 @@ const SignIn = () => {
             <Paper elevation={15} sx={{
                 padding:10,
                 height:'100vh',
-                width:600,
+                width:500,
                 margin:'20px auto',
                 display:'flex',
                 alignItems:'center',

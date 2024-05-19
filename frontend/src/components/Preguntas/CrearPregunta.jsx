@@ -1,25 +1,118 @@
-import { Grid, Paper } from '@mui/material';
 import React, { useState } from 'react'
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Avatar, Box, Button, Container, CssBaseline, Grid, Link, Paper, TextField, Typography } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+//const esquema = createTheme();
+
+
 
 const CrearPregunta = () => {
+    const [correo,setCorreo] = useState('');
+    const [clave,setClave] = useState('');
+    //const [userPassword, setUserPassword] = useState('');
+   
+    const navigate = useNavigate();
 
-    const [pregunta,setPregunta] = useState('');
-    const [respuestaUno, setRespuestaUno] = useState('')
-    const [respuestaDos, setRespuestaDos] = useState('')
-    const [respuestaTres, setRespuestaTres] = useState('')
-    const [respuestaCuatro, setRespuestaCuatro] = useState('')
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        console.log({
+          email: data.get('email'),
+          password: data.get('password'),
+        });
+        setCorreo(data.get('email'));
+        //console.log(email);
+        setClave(data.get('password'));
+        //console.log(clave);
+      };
+
+      const datos ={
+        email: correo,
+        password: clave
+      }
+
+      
+      axios
+      .post(`http://localhost:5000/usuario/login`,datos)
+      .then((response)=>{
+        
+        console.log(response);
+        //navigate('/')
+        
+        
+    })
   return (
-    <Grid align = 'center'>
-        <Paper elevation={10} sx={{
+    //<ThemeProvider theme={esquema}>
+        <Grid align ='center'>
+            <Paper elevation={15} sx={{
                 padding:10,
                 height:'100vh',
-                width:600,
+                width:1200,
                 margin:'20px auto',
                 display:'flex',
-                alignItems:'center',}}>
-            <h1>Hola Pregunta</h1>
-        </Paper>
-    </Grid>
+                alignItems:'center',
+                
+            }}>
+                <Box
+                  
+                >
+                
+                    
+
+                    <Typography component='h1' variant='h4'>
+                        Crear Nueva Pregunta
+                    </Typography>
+
+                    <Box component='form' onSubmit={handleSubmit}  sx={{mt:1}}>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        autoFocus
+                        />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                        />
+
+                    <Button
+                        type='submit'
+                        fullWidth
+                        variant='contained'
+                        sx={{
+                            mt:3,
+                            mb:2
+                        }}
+                    >
+                        Ingresar
+                    </Button>
+
+
+                    <Grid container>
+                        <Grid item xs>
+                            <Link href = "#" variant='body2'>
+                                Olvidaste tu contraseña?
+                            </Link>
+                        </Grid>
+                    </Grid> 
+                    </Box>
+                </Box>
+            </Paper>
+        </Grid>
+    //</ThemeProvider>
   )
 }
 

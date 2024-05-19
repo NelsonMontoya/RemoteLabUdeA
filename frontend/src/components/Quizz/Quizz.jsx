@@ -8,6 +8,8 @@ import { Button, Link, Typography } from '@mui/material';
 
 const URL_LABS = 'http://217.15.171.246:1880/ui/#!/1?socketid=AHPV7gXP4L03t6hqAAAN';
 const Quizz = () => {
+  
+
 
   const seleccionarPreguntasAleatorias = (arregloPreguntas, cantidadPreguntas)=>{
     const preguntasClonadas  = [...arregloPreguntas];
@@ -126,9 +128,6 @@ const resetButton =()=>{
             <button onClick={resetButton}>Reintentar</button>
           </>
         }
-        
-        
-        
         
         </>:<></>
       }

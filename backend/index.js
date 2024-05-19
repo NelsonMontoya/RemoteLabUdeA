@@ -77,6 +77,7 @@ app.post('/question',async(request,response)=>{
 
 app.get('/question', async (request,response)=>{
     try {
+        
         const questions = await Question.find({});  
 
         const preguntasClonadas  = questions;
